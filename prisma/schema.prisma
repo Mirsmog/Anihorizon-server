@@ -42,3 +42,7 @@ model Comment {
   animeId String?
   Anime   Anime?  @relation(fields: [animeId], references: [id])
 }
+
+model Poster {
+  id Int @id @default(autoincrement())
+}
