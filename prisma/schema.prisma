@@ -13,36 +13,81 @@ enum Role {
   USER
 }
 
+model RefreshTokens {
+  id     String @id @default(uuid())
+  userId String @map("user_id")
+
+  hashedToken String  @map("hashed_token")
+  revoked     Boolean @default(false)
+  user        User    @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("refresh_tokens")
+}
+
 model User {
-  id      Int      @id @default(autoincrement())
-  name    String   @unique
-  email   String   @unique
-  role    Role     @default(USER)
-  profile Profile?
+  id             String          @id @default(uuid())
+  email          String          @unique
+  name           String          @unique
+  role           Role            @default(USER)
+  password       String
+  profile        Profile?
+  comments       Comment[]
+  rating         Rating[]
+  refresh_tokens RefreshTokens[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("user")
 }
 
 model Profile {
-  id        Int     @id @default(autoincrement())
-  avatar    String?
-  firstName String? @map("first_name")
-  lastName  String? @map("last_name")
-  user      User    @relation(fields: [userId], references: [id])
-  userId    Int     @unique @map("user_id")
+  id     String  @id @default(uuid())
+  userId String  @unique @map("user_id")
+  avatar String?
+  user   User    @relation(fields: [userId], references: [id])
+
+  @@map("profile")
 }
 
 model Anime {
   id       String    @id
-  rating   Int
+  rating   Rating[]
   comments Comment[]
+
+  @@map("anime")
+}
+
+model Rating {
+  id      String  @id @default(uuid())
+  value   Int
+  anime   Anime   @relation(fields: [animeId], references: [id])
+  animeId String  @map("anime_id")
+  User    User?   @relation(fields: [userId], references: [id])
+  userId  String?
+
+  @@map("rating")
 }
 
 model Comment {
-  id      Int     @id @default(autoincrement())
+  id      String @id @default(uuid())
   content String
-  animeId String?
-  Anime   Anime?  @relation(fields: [animeId], references: [id])
-}
 
-model Poster {
-  id Int @id @default(autoincrement())
+  animeId String @map("anime_id")
+  anime   Anime  @relation(fields: [animeId], references: [id])
+
+  authorId String @map("author_id")
+  author   User   @relation(fields: [authorId], references: [id])
+
+  parentId String?   @map("parent_id")
+  parent   Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
+  replies  Comment[] @relation("CommentReplies")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("comment")
 }
