@@ -13,12 +13,12 @@ export class CreateUserDto {
   @IsString()
   @MinLength(4)
   @MaxLength(16)
-  @ApiProperty({ example: 'Joe' })
+  @ApiProperty({ example: 'John' })
   name: string;
 
   @IsNotEmpty()
   @IsEmail()
-  @ApiProperty({ example: 'joe@gmail.com' })
+  @ApiProperty({ example: 'john@gmail.com' })
   email: string;
 
   @IsNotEmpty()

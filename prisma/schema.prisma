@@ -35,7 +35,7 @@ model User {
   password       String
   profile        Profile?
   comments       Comment[]
-  rating         Rating[]
+  reviews        Review[]
   refresh_tokens RefreshTokens[]
 
   createdAt DateTime @default(now()) @map("created_at")
@@ -45,29 +45,28 @@ model User {
 }
 
 model Profile {
-  id     String  @id @default(uuid())
-  userId String  @unique @map("user_id")
+  id     String  @id
+  user   User    @relation(fields: [id], references: [id])
   avatar String?
-  user   User    @relation(fields: [userId], references: [id])
 
   @@map("profile")
 }
 
 model Anime {
   id       String    @id
-  rating   Rating[]
+  rating   Review[]
   comments Comment[]
 
   @@map("anime")
 }
 
-model Rating {
-  id      String  @id @default(uuid())
+model Review {
+  id      String @id @default(uuid())
   value   Int
-  anime   Anime   @relation(fields: [animeId], references: [id])
-  animeId String  @map("anime_id")
-  User    User?   @relation(fields: [userId], references: [id])
-  userId  String?
+  anime   Anime  @relation(fields: [animeId], references: [id])
+  animeId String @map("anime_id")
+  User    User   @relation(fields: [userId], references: [id])
+  userId  String
 
   @@map("rating")
 }
