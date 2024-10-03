@@ -13,11 +13,9 @@ export class AuthService {
     private tokenService: TokenService,
   ) {}
   async validateUser(email: string, password: string) {
-    const user: UserEntity = await this.userService.findByEmailOrName({
-      email,
-    });
+    const user: UserEntity = await this.userService.findByEmail(email);
     if (!user) throw new BadRequestException('User not found');
-    const isMatch = bcrypt.compareSync(password, user.password);
+    const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) throw new BadRequestException('Password does not match');
     return user;
   }
@@ -29,11 +27,13 @@ export class AuthService {
   }
 
   async register(userDto: CreateUserDto) {
-    const existingUser = await this.userService.findByEmailOrName({
-      email: userDto.email,
-    });
+    const existingUser = await this.userService.findByEmail(userDto.email);
+    // TODO: Fix login by name logic
+    const IsNameInUse = await this.userService.findByName(userDto.name);
 
     if (existingUser) throw new BadRequestException('email already exists');
+    if (IsNameInUse) throw new BadRequestException('name already in use');
+
     const hashedPassword = await bcrypt.hash(userDto.password, 10);
 
     const newUser = await this.userService.create({

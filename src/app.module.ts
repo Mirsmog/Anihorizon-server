@@ -9,6 +9,8 @@ import { AppService } from './app.service';
 import { TokenModule } from './token/token.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtGuard } from './auth/guards/jwt.guard';
+import { CommentsModule } from './comments/comments.module';
+import { AnimeModule } from './anime/anime.module';
 
 @Module({
   imports: [
@@ -17,6 +19,8 @@ import { JwtGuard } from './auth/guards/jwt.guard';
     AuthModule,
     UsersModule,
     TokenModule,
+    CommentsModule,
+    AnimeModule,
   ],
   controllers: [AppController],
   providers: [AppService, { provide: APP_GUARD, useClass: JwtGuard }],

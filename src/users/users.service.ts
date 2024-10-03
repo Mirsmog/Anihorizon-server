@@ -41,10 +41,13 @@ export class UsersService {
     return user;
   }
 
-  async findByEmailOrName({ name, email }: { name?: string; email?: string }) {
-    const user = await this.prisma.user.findFirst({
-      where: { OR: [{ email }, { name }] },
-    });
+  async findByEmail(email: string) {
+    const user = await this.prisma.user.findUnique({ where: { email } });
+    return user;
+  }
+
+  async findByName(name: string) {
+    const user = await this.prisma.user.findUnique({ where: { name } });
     return user;
   }
 
