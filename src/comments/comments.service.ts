@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateCommentDto } from './dto/create-comment.dto';
+import {
+  CreateCommentDto,
+  CreateCommentWithUserIdDto,
+} from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 
 @Injectable()
@@ -28,17 +31,23 @@ export class CommentsService {
     return comment;
   }
 
-  async create(dto: CreateCommentDto) {
+  async create(dto: CreateCommentWithUserIdDto) {
+    await this.prisma.anime.upsert({
+      where: { id: dto.animeId },
+      create: { id: dto.animeId },
+      update: {},
+    });
+
     const comment = await this.prisma.comment.create({
       data: dto,
     });
     return comment;
   }
 
-  async update({ id, content }: UpdateCommentDto) {
+  async update(dto: UpdateCommentDto) {
     const comment = await this.prisma.comment.update({
-      where: { id },
-      data: { content },
+      where: { id: dto.id },
+      data: { content: dto.content },
     });
     return comment;
   }

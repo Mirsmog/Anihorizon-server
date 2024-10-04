@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { CommentsService } from 'src/comments/comments.service';
-import { CreateCommentDto } from 'src/comments/dto/create-comment.dto';
+import { CreateCommentWithUserIdDto } from 'src/comments/dto/create-comment.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateReviewDtoWithUserId } from './dto/create-review.dto';
 import { ReviewsService } from 'src/reviews/reviews.service';
-import { console } from 'node:inspector/promises';
 
 @Injectable()
 export class AnimeService {
@@ -24,15 +23,18 @@ export class AnimeService {
     return comments;
   }
 
-  async addComment(dto: CreateCommentDto) {
+  async addComment(dto: CreateCommentWithUserIdDto) {
     const comment = await this.comments.create(dto);
     return comment;
   }
 
+  async deleteComment(id: string) {
+    const comment = await this.comments.delete(id);
+    return comment;
+  }
+
   async getRating(id: string) {
-    const rating = await this.prisma.review.findMany({
-      where: { animeId: id },
-    });
+    const rating = await this.review.findAllByAnimeId(id);
     return rating;
   }
 
