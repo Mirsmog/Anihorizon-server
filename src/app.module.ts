@@ -11,6 +11,7 @@ import { AuthModule } from './auth/auth.module';
 import { JwtGuard } from './auth/guards/jwt.guard';
 import { CommentsModule } from './comments/comments.module';
 import { AnimeModule } from './anime/anime.module';
+import { ReviewsModule } from './reviews/reviews.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { AnimeModule } from './anime/anime.module';
     TokenModule,
     CommentsModule,
     AnimeModule,
+    ReviewsModule,
   ],
   controllers: [AppController],
   providers: [AppService, { provide: APP_GUARD, useClass: JwtGuard }],

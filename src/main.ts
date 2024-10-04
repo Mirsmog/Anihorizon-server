@@ -9,6 +9,15 @@ async function bootstrap() {
     .setTitle('Anihorizon api')
     .setDescription('anihorizon main api')
     .setVersion('1.0')
+    .addBearerAuth({
+      type: 'http',
+      scheme: 'bearer',
+      bearerFormat: 'JWT',
+      in: 'header',
+      name: 'Authorization',
+      description: 'Enter your Bearer token',
+    })
+    .addSecurityRequirements('bearer')
     .build();
   app.useGlobalPipes(
     new ValidationPipe({
