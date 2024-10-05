@@ -18,6 +18,11 @@ export class AnimeService {
     return anime;
   }
 
+  async findCommentById(id: string) {
+    const comment = await this.comments.findById(id);
+    return comment;
+  }
+
   async getComments(id: string) {
     const comments = await this.comments.findAllByAnimeId(id);
     return comments;

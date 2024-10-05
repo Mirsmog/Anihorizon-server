@@ -9,13 +9,14 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBody } from '@nestjs/swagger';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { LoginDto } from './dto/login.dto';
 import { Public } from './decorators/public.decorator';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { AuthService } from './auth.service';
 import { Request, Response } from 'express';
 
+@ApiTags('Authorization')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -51,6 +52,7 @@ export class AuthController {
     return res.send({ accessToken });
   }
 
+  @Public()
   @Get('refresh-tokens')
   async refreshTokens(@Req() req: Request, @Res() res: Response) {
     const token = req.cookies['refreshToken'];

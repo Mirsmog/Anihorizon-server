@@ -12,18 +12,14 @@ import { AnimeService } from './anime.service';
 import { Public } from 'src/auth/decorators/public.decorator';
 import { User } from 'src/auth/decorators/user.decorator';
 import { UserEntity } from 'src/users/entities/user.entity';
-import { ApiParam } from '@nestjs/swagger';
+import { ApiParam, ApiTags } from '@nestjs/swagger';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { CreateCommentDto } from 'src/comments/dto/create-comment.dto';
-import { console } from 'inspector';
-import { CommentsService } from 'src/comments/comments.service';
 
+@ApiTags('Anime')
 @Controller('anime')
 export class AnimeController {
-  constructor(
-    private readonly animeService: AnimeService,
-    private readonly comments: CommentsService,
-  ) {}
+  constructor(private readonly animeService: AnimeService) {}
 
   @Public()
   @Get('rating/:id')
@@ -77,7 +73,7 @@ export class AnimeController {
     @User() user: UserEntity,
     @Param() { id }: { id: string },
   ) {
-    const existingComment = await this.comments.findById(id);
+    const existingComment = await this.animeService.findCommentById(id);
     if (!existingComment) throw new NotFoundException('Comment not found');
 
     const isOwner = existingComment.authorId === user.id;
