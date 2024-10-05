@@ -6,6 +6,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { LocalStrategy } from './strategy/local-strategy';
 import { JwtStrategy } from './strategy/jwt-strategy';
 import { TokenService } from 'src/token/token.service';
+import { JwtRefreshStrategy } from './strategy/jwt-refresh.strategy';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Module({
   imports: [
@@ -20,7 +22,14 @@ import { TokenService } from 'src/token/token.service';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy, TokenService],
+  providers: [
+    AuthService,
+    LocalStrategy,
+    JwtStrategy,
+    JwtRefreshStrategy,
+    TokenService,
+    PrismaService,
+  ],
   exports: [AuthService, JwtModule],
 })
 export class AuthModule {}

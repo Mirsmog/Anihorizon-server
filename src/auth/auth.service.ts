@@ -20,10 +20,14 @@ export class AuthService {
     return user;
   }
 
-  login(user: UserEntity) {
+  async login(user: UserEntity) {
     const jti = uuidv4();
-    const tokens = this.tokenService.generateTokens(user, jti);
-    return tokens;
+    const { accessToken, refreshToken } = this.tokenService.generateTokens(
+      user.id,
+      jti,
+    );
+    await this.tokenService.saveRefreshToken(user.id, refreshToken, jti);
+    return { accessToken, refreshToken };
   }
 
   async register(userDto: CreateUserDto) {
@@ -42,5 +46,11 @@ export class AuthService {
     });
 
     return this.login(newUser);
+  }
+
+  async refreshTokens(oldRefreshToken: string) {
+    const { accessToken, refreshToken } =
+      await this.tokenService.refreshTokens(oldRefreshToken);
+    return { accessToken, refreshToken };
   }
 }
